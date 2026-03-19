@@ -23,9 +23,18 @@ Irei entregar um mvp como no processo seletivo(documento anexado) não foi menci
         - [x] Criar a imagem docker e subir o postgres na máquina local
         - [x] Verificar o banco de dados no DBeaver
         - [x] Criar uma rota /api/v1/status retornando status 200 e uma mensagem de "OK".
-    - 3.2 Implementação
-        - [ ] Fazer TDD
-        - [ ] Implementar a cobertura
+    - 3.2 Implementação (TDD > Cobertura > Testes > Análise)
+        - [x] Cadastrar uma pessoa
+            - [x] Criar DTO de criação de pessoa (`CreatePersonDTO.java`)
+            - [x] Criar DTO de resposta de pessoa (`PersonResponseDTO.java`)
+            - [x] Criar Entidade pessoa (`PersonEntity.java`)
+            - [x] Criar Repositório pessoa (`PersonRepository.java`)
+            - [x] Criar Serviço pessoa (`PersonService.java`)
+            - [x] Criar Controller pessoa (`PersonController.java`)
+            - [x] implementar teste de cadastro caminho positivo/negativo
+            - [x] Criar rota /pessoa com método POST
+        - [x] Criar tratamento global de exceções (`GlobalExceptionHandler.java`)
+        -  [ ] Implementar a cobertura
         - [ ] Testar a aplicação
         - [ ] levantar analise e enviar para o github
 - [ ] **4. Desenvolvimento do frontend:**
