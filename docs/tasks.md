@@ -32,6 +32,7 @@ Irei entregar um mvp como no processo seletivo(documento anexado) não foi menci
             - [x] Criar Serviço pessoa (`PersonService.java`)
             - [x] Criar Controller pessoa (`PersonController.java`)
             - [x] implementar teste de cadastro caminho positivo/negativo
+            - [x] Refatorar `PersonControllerTest.java` substituindo `MockMvc` por `RestTestClient` para maior produtividade e legibilidade
             - [x] Criar rota /pessoa com método POST
         - [x] Criar tratamento global de exceções (`GlobalExceptionHandler.java`)
         -  [ ] Implementar a cobertura

@@ -1,76 +1,88 @@
 package com.simbioseventures.backend.controllers;
 
-import com.simbioseventures.backend.dtos.CreatePersonDTO;
-import com.simbioseventures.backend.dtos.PersonResponseDTO;
-import com.simbioseventures.backend.exceptions.GlobalExceptionHandler;
-import com.simbioseventures.backend.services.PersonService;
+import java.time.LocalDate;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.client.RestTestClient;
 
-import tools.jackson.databind.ObjectMapper;
-
-import java.time.LocalDate;
-
+import com.simbioseventures.backend.dtos.CreatePersonDTO;
+import com.simbioseventures.backend.dtos.PersonResponseDTO;
+import com.simbioseventures.backend.services.PersonService;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-
-@WebMvcTest({PersonController.class, GlobalExceptionHandler.class})
+@WebMvcTest(PersonController.class)
+@AutoConfigureRestTestClient
 public class PersonControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+  @Autowired
+  private RestTestClient restTestClient;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+  // Definindo o duble
+  @MockitoBean
+  private PersonService personService;
 
-    @MockitoBean
-    private PersonService personService;
+  @Test
+  @DisplayName("Should return 201 when the person data is valid.")
+  void createPersonWithValidData() {
+    // Arrange
+    CreatePersonDTO createPersonDTO = new CreatePersonDTO("Test Name", "test@test.com", LocalDate.of(1990, 5, 15));
+    PersonResponseDTO personResponseDTO = new PersonResponseDTO(1L, "Test Name", "test@test.com", LocalDate.of(1990, 5, 15));
 
-    @Test
-    @DisplayName("Should create a new person successfully")
-    void testCreatePerson() throws Exception {
-        CreatePersonDTO data = new CreatePersonDTO("João da Silva", "joao@example.com", LocalDate.of(2000, 1, 1));
+    // Ensinamos ao Mock o que retornar quando for chamado
 
-        PersonResponseDTO mockResponse = new PersonResponseDTO(
-                1L, "João da Silva", "joao@example.com", LocalDate.of(2000, 1, 1));
+    when(personService.createPerson(any(CreatePersonDTO.class))).thenReturn(personResponseDTO);
 
-        when(personService.createPerson(any(CreatePersonDTO.class))).thenReturn(mockResponse);
+    // Act & Assert
+    restTestClient.post()
+      .uri("/pessoa")
+      .contentType(MediaType.APPLICATION_JSON)
+      .body(createPersonDTO)
+      .exchange()
+      .expectStatus().isCreated()
+      .expectBody()
+      .jsonPath("$.id").isEqualTo(1)
+      .jsonPath("$.name").isEqualTo("Test Name")
+      .jsonPath("$.email").isEqualTo("test@test.com")
+      .jsonPath("$.birthDate").isEqualTo("1990-05-15");
+  }
 
-        mockMvc.perform(post("/pessoa")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(data)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name").value("João da Silva"))
-                .andExpect(jsonPath("$.email").value("joao@example.com"))
-                .andExpect(jsonPath("$.birthDate").value("2000-01-01"));
-    }
+  @Test
+  @DisplayName("Should return 400 when the person data is invalid.")
+  void createPersonWithInvalidData() {
+    CreatePersonDTO createPersonDTO = new CreatePersonDTO("", "email", LocalDate.of(2000, 2, 2));
 
-    @Test
-    @DisplayName("Should return 409 Conflict when e-mail already exists")
-    void testCreatePersonWithDuplicateEmail() throws Exception {
-        CreatePersonDTO data = new CreatePersonDTO("João da Silva", "joao@example.com", LocalDate.of(2000, 1, 1));
+    restTestClient.post()
+      .uri("/pessoa")
+      .contentType(MediaType.APPLICATION_JSON)
+      .body(createPersonDTO)
+      .exchange()
+      .expectStatus().isBadRequest();
+  }
 
-        when(personService.createPerson(any(CreatePersonDTO.class)))
-                .thenThrow(new IllegalArgumentException("E-mail already registered"));
+  @Test
+  @DisplayName("Should return 409 Conflict when e-mail already exists")
+  void createPersonWithDuplicateEmail() {
+    CreatePersonDTO createPersonDTO = new CreatePersonDTO("Test Name", "test@test.com", LocalDate.of(1990, 5, 15));
 
-        mockMvc.perform(post("/pessoa")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(data)))
-                .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.status").value(409))
-                .andExpect(jsonPath("$.error").value("Conflict"))
-                .andExpect(jsonPath("$.message").value("E-mail already registered"))
-                .andExpect(jsonPath("$.path").value("/pessoa"));
-    }
+    when(personService.createPerson(any(CreatePersonDTO.class)))
+      .thenThrow(new IllegalArgumentException("E-mail already registered"));
+
+    restTestClient.post()
+      .uri("/pessoa")
+      .contentType(MediaType.APPLICATION_JSON)
+      .body(createPersonDTO)
+      .exchange()
+      .expectStatus().isEqualTo(HttpStatus.CONFLICT)
+      .expectBody()
+      .jsonPath("$.message").isEqualTo("E-mail already registered");
+  }
 }
-
