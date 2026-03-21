@@ -35,7 +35,8 @@ public class PersonControllerTest {
   void createPersonWithValidData() {
     // Arrange
     CreatePersonDTO createPersonDTO = new CreatePersonDTO("Test Name", "test@test.com", LocalDate.of(1990, 5, 15));
-    PersonResponseDTO personResponseDTO = new PersonResponseDTO(1L, "Test Name", "test@test.com", LocalDate.of(1990, 5, 15));
+    PersonResponseDTO personResponseDTO = new PersonResponseDTO(1L, "Test Name", "test@test.com",
+        LocalDate.of(1990, 5, 15));
 
     // Ensinamos ao Mock o que retornar quando for chamado
 
@@ -43,16 +44,16 @@ public class PersonControllerTest {
 
     // Act & Assert
     restTestClient.post()
-      .uri("/pessoa")
-      .contentType(MediaType.APPLICATION_JSON)
-      .body(createPersonDTO)
-      .exchange()
-      .expectStatus().isCreated()
-      .expectBody()
-      .jsonPath("$.id").isEqualTo(1)
-      .jsonPath("$.name").isEqualTo("Test Name")
-      .jsonPath("$.email").isEqualTo("test@test.com")
-      .jsonPath("$.birthDate").isEqualTo("1990-05-15");
+        .uri("/pessoa")
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(createPersonDTO)
+        .exchange()
+        .expectStatus().isCreated()
+        .expectBody()
+        .jsonPath("$.id").isEqualTo(1)
+        .jsonPath("$.name").isEqualTo("Test Name")
+        .jsonPath("$.email").isEqualTo("test@test.com")
+        .jsonPath("$.birthDate").isEqualTo("1990-05-15");
   }
 
   @Test
@@ -61,11 +62,11 @@ public class PersonControllerTest {
     CreatePersonDTO createPersonDTO = new CreatePersonDTO("", "email", LocalDate.of(2000, 2, 2));
 
     restTestClient.post()
-      .uri("/pessoa")
-      .contentType(MediaType.APPLICATION_JSON)
-      .body(createPersonDTO)
-      .exchange()
-      .expectStatus().isBadRequest();
+        .uri("/pessoa")
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(createPersonDTO)
+        .exchange()
+        .expectStatus().isBadRequest();
   }
 
   @Test
@@ -74,15 +75,15 @@ public class PersonControllerTest {
     CreatePersonDTO createPersonDTO = new CreatePersonDTO("Test Name", "test@test.com", LocalDate.of(1990, 5, 15));
 
     when(personService.createPerson(any(CreatePersonDTO.class)))
-      .thenThrow(new IllegalArgumentException("E-mail already registered"));
+        .thenThrow(new IllegalArgumentException("E-mail already registered"));
 
     restTestClient.post()
-      .uri("/pessoa")
-      .contentType(MediaType.APPLICATION_JSON)
-      .body(createPersonDTO)
-      .exchange()
-      .expectStatus().isEqualTo(HttpStatus.CONFLICT)
-      .expectBody()
-      .jsonPath("$.message").isEqualTo("E-mail already registered");
+        .uri("/pessoa")
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(createPersonDTO)
+        .exchange()
+        .expectStatus().isEqualTo(HttpStatus.CONFLICT)
+        .expectBody()
+        .jsonPath("$.message").isEqualTo("E-mail already registered");
   }
 }

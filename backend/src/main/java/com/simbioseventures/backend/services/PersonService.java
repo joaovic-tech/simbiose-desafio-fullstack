@@ -25,15 +25,8 @@ public class PersonService {
         person.setEmail(dto.email());
         person.setBirthDate(dto.birthDate());
 
-        PersonEntity savedPerson = personRepository.save(person);
-        return mapToResponseDTO(savedPerson);
-    }
+        person = personRepository.save(person);
 
-    private PersonResponseDTO mapToResponseDTO(PersonEntity person) {
-        return new PersonResponseDTO(
-                person.getId(),
-                person.getName(),
-                person.getEmail(),
-                person.getBirthDate());
+        return new PersonResponseDTO(person);
     }
 }

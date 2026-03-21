@@ -43,18 +43,18 @@ class PersonServiceTest {
     void createPerson() {
         // Arrange (Preparação)
         CreatePersonDTO data = new CreatePersonDTO("test", "test@user.com", LocalDate.now());
-        PersonEntity mockedSavedEntity = createPersonEntity("test", "test@user.com", LocalDate.of(2023, 1, 1));
+        PersonEntity savedPerson = createPersonEntity("test", "test@user.com", LocalDate.of(2023, 1, 1));
 
         when(personRepository.existsByEmail(data.email())).thenReturn(false);
-        when(personRepository.save(any(PersonEntity.class))).thenReturn(mockedSavedEntity);
+        when(personRepository.save(any(PersonEntity.class))).thenReturn(savedPerson);
 
         // Act (Ação)
         PersonResponseDTO result = personService.createPerson(data);
 
         // Assert (Verificação)
         assertNotNull(result);
-        assertEquals(mockedSavedEntity.getEmail(), result.email());
-        assertEquals(mockedSavedEntity.getName(), result.name());
+        assertEquals(savedPerson.getEmail(), result.email());
+        assertEquals(savedPerson.getName(), result.name());
         assertInstanceOf(PersonResponseDTO.class, result);
     }
 
