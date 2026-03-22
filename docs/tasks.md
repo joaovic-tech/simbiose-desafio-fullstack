@@ -9,15 +9,15 @@
 ## 2. Funcionalidades Backend (MVP)
 
 - [x] RF01: Cadastro de Pessoa (`POST /pessoa`) - Validado com DTOs e Bean Validation.
-- [x] GlobalErrorHandling: Email duplicado e erro 400 (adicionar mais caso necessário).
-- [ ] RF02: Busca por ID (`GET /pessoa/{id}`) Pendente;
+- [x] GlobalErrorHandling: Email duplicado (409), dados inválidos (400) e pessoa não encontrada (404).
+- [x] RF02: Busca por ID (`GET /pessoa/{id}`).
 - [ ] RF05: Listagem de Pessoas (`GET /pessoas`) - Pendente.
-- [ ] RF03: Edição de Pessoa (`PUT /pessoa/{id}`) - Pendente.
-- [ ] RF04: Remoção de Pessoa (`DELETE /pessoa/{id}`) - Pendente.
+- [x] RF03: Edição de Pessoa (`PUT /pessoa/{id}`).
+- [x] RF04: Remoção de Pessoa (`DELETE /pessoa/{id}`).
 
 ## 3. Cobertura de Testes
 
-- [ ] Teste: `PersonControllerTest.java` (status da cobertura: boa parte testada).
+- [x] Teste: `PersonControllerTest.java` (cobertura completa: 9/9 testes passando).
 - [ ] Teste: `PersonServiceTest.java` (status da cobertura: boa tarde testada).
 - [x] Teste: `PersonRepositoryTest.java` (status da cobertura: testada).
 - [x] Teste: `BackendApplicationTests.java` (contexto carregando com H2).
