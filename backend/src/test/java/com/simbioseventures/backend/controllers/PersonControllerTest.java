@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.simbioseventures.backend.dtos.CreatePersonDTO;
 import com.simbioseventures.backend.dtos.PersonResponseDTO;
-import com.simbioseventures.backend.dtos.UpdatepersonDTO;
+import com.simbioseventures.backend.dtos.UpdatePersonDTO;
 import com.simbioseventures.backend.exceptions.PersonNotFoundException;
 import com.simbioseventures.backend.services.PersonService;
 
@@ -125,10 +125,10 @@ public class PersonControllerTest {
   @DisplayName("RF03: Should update person when Id exists and request is valid.")
   void shouldUpdatePersonWhenIdExistsAndRequestIsValid() throws Exception {
     // Arrange
-    UpdatepersonDTO updateDTO = new UpdatepersonDTO("Updated Name", "updated@test.com", LocalDate.of(1995, 3, 20));
+    UpdatePersonDTO updateDTO = new UpdatePersonDTO("Updated Name", "updated@test.com", LocalDate.of(1995, 3, 20));
     PersonResponseDTO updatedResponse = new PersonResponseDTO(1L, "Updated Name", "updated@test.com", LocalDate.of(1995, 3, 20));
 
-    when(personService.updatePerson(eq(1L), any(UpdatepersonDTO.class))).thenReturn(updatedResponse);
+    when(personService.updatePerson(eq(1L), any(UpdatePersonDTO.class))).thenReturn(updatedResponse);
 
     // Act & Assert
     mockMvc.perform(put("/pessoa/1")
@@ -145,9 +145,9 @@ public class PersonControllerTest {
   @DisplayName("Should return 404 when updating a person that does not exist.")
   void shouldReturnNotFoundWhenUpdatingNonExistentPerson() throws Exception {
     // Arrange
-    UpdatepersonDTO updateDTO = new UpdatepersonDTO("Updated Name", "updated@test.com", LocalDate.of(1995, 3, 20));
+    UpdatePersonDTO updateDTO = new UpdatePersonDTO("Updated Name", "updated@test.com", LocalDate.of(1995, 3, 20));
 
-    when(personService.updatePerson(eq(999L), any(UpdatepersonDTO.class)))
+    when(personService.updatePerson(eq(999L), any(UpdatePersonDTO.class)))
         .thenThrow(new PersonNotFoundException(999L));
 
     // Act & Assert

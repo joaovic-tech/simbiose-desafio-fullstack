@@ -2,10 +2,13 @@ package com.simbioseventures.backend.services;
 
 import com.simbioseventures.backend.dtos.CreatePersonDTO;
 import com.simbioseventures.backend.dtos.PersonResponseDTO;
-import com.simbioseventures.backend.dtos.UpdatepersonDTO;
+import com.simbioseventures.backend.dtos.UpdatePersonDTO;
 import com.simbioseventures.backend.entities.PersonEntity;
 import com.simbioseventures.backend.exceptions.PersonNotFoundException;
 import com.simbioseventures.backend.repositories.PersonRepository;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -37,7 +40,7 @@ public class PersonService {
     return new PersonResponseDTO(person);
   }
 
-  public PersonResponseDTO updatePerson(Long id, UpdatepersonDTO data) {
+  public PersonResponseDTO updatePerson(Long id, UpdatePersonDTO data) {
     PersonEntity person = personRepository.findById(id)
         .orElseThrow(() -> new PersonNotFoundException(id));
 
@@ -54,6 +57,22 @@ public class PersonService {
       throw new PersonNotFoundException(id);
     }
     personRepository.deleteById(id);
+  }
+
+  public List<PersonResponseDTO> findAll() {
+    return personRepository.findAll()
+      .stream()
+      .map(this::mapToPersonResponseDTO)
+      .collect(Collectors.toList());
+  }
+
+  private PersonResponseDTO mapToPersonResponseDTO(PersonEntity data) {
+    return new PersonResponseDTO(
+      data.getId(),
+      data.getName(),
+      data.getEmail(),
+      data.getBirthDate()
+    );
   }
 
 }

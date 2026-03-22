@@ -2,7 +2,7 @@ package com.simbioseventures.backend.controllers;
 
 import com.simbioseventures.backend.dtos.CreatePersonDTO;
 import com.simbioseventures.backend.dtos.PersonResponseDTO;
-import com.simbioseventures.backend.dtos.UpdatepersonDTO;
+import com.simbioseventures.backend.dtos.UpdatePersonDTO;
 import com.simbioseventures.backend.services.PersonService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -37,7 +37,7 @@ public class PersonController {
   }
 
   @PutMapping("/pessoa/{id}")
-  public PersonResponseDTO updatePerson(@PathVariable Long id, @RequestBody @Valid UpdatepersonDTO updatePersonDTO) {
+  public PersonResponseDTO updatePerson(@PathVariable Long id, @RequestBody @Valid UpdatePersonDTO updatePersonDTO) {
     return personService.updatePerson(id, updatePersonDTO);
   }
 
