@@ -24,4 +24,17 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
     }
+
+    @ExceptionHandler(PersonNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handlePersonNotFound(
+            PersonNotFoundException ex, HttpServletRequest request) {
+
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("status", HttpStatus.NOT_FOUND.value());
+        body.put("error", "Not Found");
+        body.put("message", ex.getMessage());
+        body.put("path", request.getRequestURI());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
 }
