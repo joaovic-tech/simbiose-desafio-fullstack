@@ -11,13 +11,13 @@
 - [x] RF01: Cadastro de Pessoa (`POST /pessoa`).
 - [x] GlobalErrorHandling: Email duplicado (409).
 - [x] RF02: Busca por ID (`GET /pessoa/{id}`).
-- [ ] RF05: Listagem de Pessoas (`GET /pessoas`).
+- [x] RF05: Listagem de Pessoas (`GET /pessoas`).
 - [x] RF03: Edição de Pessoa (`PUT /pessoa/{id}`).
 - [x] RF04: Remoção de Pessoa (`DELETE /pessoa/{id}`).
 
 ## 3. Cobertura de Testes
 
-- [ ] Teste: `PersonControllerTest.java` (status da cobertura: ***imcompleta***).
+- [x] Teste: `PersonControllerTest.java` (status da cobertura: ***imcompleta***).
 - [x] Teste: `PersonServiceTest.java` (status da cobertura: ***completa***).
 - [x] Teste: `PersonRepositoryTest.java` (status da cobertura: ***completa***).
 - [x] Teste: `BackendApplicationTests.java` (contexto carregando com H2).

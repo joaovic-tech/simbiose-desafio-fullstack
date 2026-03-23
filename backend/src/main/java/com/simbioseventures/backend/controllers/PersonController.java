@@ -5,6 +5,9 @@ import com.simbioseventures.backend.dtos.PersonResponseDTO;
 import com.simbioseventures.backend.dtos.UpdatePersonDTO;
 import com.simbioseventures.backend.services.PersonService;
 import jakarta.validation.Valid;
+
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,5 +48,10 @@ public class PersonController {
   public ResponseEntity<Void> deletePerson(@PathVariable Long id) {
     personService.deletePerson(id);
     return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping("/pessoas")
+  public List<PersonResponseDTO> findAll() {
+    return personService.findAll();
   }
 }

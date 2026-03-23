@@ -107,8 +107,6 @@ class PersonServiceTest {
     @Test
     @DisplayName("Should find person by id")
     void findById() {
-      // TODO: ATIKA - Instrução:
-      // 1. Mockar um ID e uma PersonEntity.
       PersonEntity person = createPersonEntity(1L, "name", "email", LocalDate.of(2000, 2, 2));
 
       when(personRepository.findById(person.getId())).thenReturn(Optional.of(person));
@@ -125,10 +123,7 @@ class PersonServiceTest {
     @Test
     @DisplayName("Should throw PersonNotFoundException when id does not exist")
     void findByIdNotFound() {
-      // TODO: ATIKA - Instrução:
-      // 1. Mockar personRepository.findById(anyLong()) retornando Optional.empty().
       when(personRepository.findById(anyLong())).thenReturn(Optional.empty());
-      // 2. Assert: assertThrows(PersonNotFoundException.class, () -> personService.findById(1L)).
       assertThrows(
         PersonNotFoundException.class,
         () -> personService.findById(1L)
@@ -152,7 +147,6 @@ class PersonServiceTest {
 
       personService.updatePerson(entity.getId(), updatePersonDTO);
 
-      // 3. Assert: Verificar se os novos dados do DTO foram aplicados à entidade.
       assertEquals(updatePersonDTO.birthDate(), entity.getBirthDate());
     }
 
