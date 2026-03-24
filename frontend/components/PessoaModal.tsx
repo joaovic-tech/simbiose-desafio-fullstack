@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { X, Save, Loader2 } from 'lucide-react';
+import { parseISO, format } from 'date-fns';
 import { Pessoa, PessoaInput } from '@/lib/api';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
@@ -53,7 +54,7 @@ export function PessoaModal({ isOpen, onClose, onSave, pessoa }: PessoaModalProp
         reset({
           name: pessoa.name,
           email: pessoa.email,
-          birthDate: pessoa.birthDate.split('T')[0]
+          birthDate: format(parseISO(pessoa.birthDate), 'yyyy-MM-dd')
         });
       } else {
         reset({
