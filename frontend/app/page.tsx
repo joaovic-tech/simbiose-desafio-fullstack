@@ -14,7 +14,7 @@ export default function Home() {
   const [pessoas, setPessoas] = useState<Pessoa[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  
+
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -91,7 +91,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#112342] text-white p-6 md:p-12">
       <div className="max-w-6xl mx-auto space-y-8">
-        
+
         {/* Header Section */}
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -103,10 +103,10 @@ export default function Home() {
               MVP - Simbiose Desafio Fullstack
             </p>
           </div>
-          
+
           <button
             onClick={openAddModal}
-            className="flex items-center justify-center gap-2 px-6 py-3 bg-[#192c4c] hover:bg-[#112342] border border-[#70a7cb] text-white font-semibold rounded-xl transition-all shadow-lg shadow-[#192c4c]/20 hover:shadow-[#70a7cb]/20 hover:-translate-y-0.5"
+            className="flex items-center cursor-pointer justify-center gap-2 px-6 py-3 bg-[#192c4c] hover:bg-[#112342] border border-[#70a7cb] text-white font-semibold rounded-xl transition-all shadow-lg shadow-[#192c4c]/20 hover:shadow-[#70a7cb]/20"
           >
             <Plus className="w-5 h-5" />
             Nova Pessoa
@@ -125,7 +125,7 @@ export default function Home() {
               className="w-full pl-10 pr-4 py-2.5 bg-[#112342] border border-[#70a7cb]/30 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-[#70a7cb] transition-all"
             />
           </div>
-          
+
           <button
             onClick={fetchPessoas}
             className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-[#70a7cb] hover:text-white bg-[#112342] border border-[#70a7cb]/30 hover:border-[#70a7cb] rounded-xl transition-all"
