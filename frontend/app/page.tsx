@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { api, Pessoa, PessoaInput } from '@/lib/api';
-import { PessoaModal } from '@/components/PessoaModal';
+import { api, Person, PersonInput } from '@/lib/api';
+import { PersonModal } from '@/components/PersonModal';
 import { DeleteConfirmModal } from '@/components/DeleteConfirmModal';
+import { Button } from '@/components/ui/Button';
 import { Plus, Edit2, Trash2, Search, Users, RefreshCw, Loader2 } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -11,20 +12,19 @@ import { toast } from 'sonner';
 import { motion } from 'motion/react';
 
 export default function Home() {
-  const [pessoas, setPessoas] = useState<Pessoa[]>([]);
+  const [persons, setPersons] = useState<Person[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [selectedPessoa, setSelectedPessoa] = useState<Pessoa | null>(null);
+  const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
 
-  const fetchPessoas = async () => {
+  const fetchPersons = async () => {
     setIsLoading(true);
     try {
-      const data = await api.getPessoas();
-      setPessoas(data);
+      const data = await api.getPersons();
+      setPersons(data);
     } catch (error) {
       console.error(error);
       toast.error('Erro ao carregar a lista de pessoas.');
@@ -34,19 +34,19 @@ export default function Home() {
   };
 
   useEffect(() => {
-    fetchPessoas();
+    fetchPersons();
   }, []);
 
-  const handleSave = async (data: PessoaInput, id?: number) => {
+  const handleSave = async (data: PersonInput, id?: number) => {
     try {
       if (id) {
-        await api.updatePessoa(id, data);
+        await api.updatePerson(id, data);
         toast.success('Pessoa atualizada com sucesso!');
       } else {
-        await api.createPessoa(data); // Using the correct method from api.ts
+        await api.createPerson(data);
         toast.success('Pessoa cadastrada com sucesso!');
       }
-      fetchPessoas();
+      fetchPersons();
     } catch (error: any) {
       console.error(error);
       toast.error(error.message || 'Erro ao salvar os dados.');
@@ -55,12 +55,12 @@ export default function Home() {
   };
 
   const handleDelete = async () => {
-    if (!selectedPessoa) return;
+    if (!selectedPerson) return;
     try {
-      await api.deletePessoa(selectedPessoa.id);
+      await api.deletePerson(selectedPerson.id);
       toast.success('Registro excluído com sucesso!');
-      setSelectedPessoa(null);
-      fetchPessoas();
+      setSelectedPerson(null);
+      fetchPersons();
     } catch (error) {
       console.error(error);
       toast.error('Erro ao excluir registro.');
@@ -68,21 +68,21 @@ export default function Home() {
   };
 
   const openAddModal = () => {
-    setSelectedPessoa(null);
+    setSelectedPerson(null);
     setIsModalOpen(true);
   };
 
-  const openEditModal = (pessoa: Pessoa) => {
-    setSelectedPessoa(pessoa);
+  const openEditModal = (person: Person) => {
+    setSelectedPerson(person);
     setIsModalOpen(true);
   };
 
-  const openDeleteModal = (pessoa: Pessoa) => {
-    setSelectedPessoa(pessoa);
+  const openDeleteModal = (person: Person) => {
+    setSelectedPerson(person);
     setIsDeleteModalOpen(true);
   };
 
-  const filteredPessoas = pessoas.filter(
+  const filteredPersons = persons.filter(
     (p) =>
       p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.email.toLowerCase().includes(searchQuery.toLowerCase())
@@ -92,7 +92,6 @@ export default function Home() {
     <div className="min-h-screen bg-[#112342] text-white p-6 md:p-12">
       <div className="max-w-6xl mx-auto space-y-8">
 
-        {/* Header Section */}
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white flex items-center gap-3">
@@ -104,16 +103,12 @@ export default function Home() {
             </p>
           </div>
 
-          <button
-            onClick={openAddModal}
-            className="flex items-center cursor-pointer justify-center gap-2 px-6 py-3 bg-[#192c4c] hover:bg-[#112342] border border-[#70a7cb] text-white font-semibold rounded-xl transition-all shadow-lg shadow-[#192c4c]/20 hover:shadow-[#70a7cb]/20"
-          >
+          <Button onClick={openAddModal} size="lg">
             <Plus className="w-5 h-5" />
             Nova Pessoa
-          </button>
+          </Button>
         </header>
 
-        {/* Search and Filters */}
         <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-[#192c4c] p-4 rounded-2xl border border-[#70a7cb]/30">
           <div className="relative w-full md:max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#70a7cb]" />
@@ -126,16 +121,12 @@ export default function Home() {
             />
           </div>
 
-          <button
-            onClick={fetchPessoas}
-            className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-[#70a7cb] hover:text-white bg-[#112342] border border-[#70a7cb]/30 hover:border-[#70a7cb] rounded-xl transition-all"
-          >
+          <Button variant="outline" size="sm" onClick={fetchPersons}>
             <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
             Atualizar
-          </button>
+          </Button>
         </div>
 
-        {/* Data Table */}
         <div className="bg-[#192c4c] border border-[#70a7cb]/30 rounded-2xl overflow-hidden shadow-xl">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
@@ -155,7 +146,7 @@ export default function Home() {
                       Carregando dados...
                     </td>
                   </tr>
-                ) : filteredPessoas.length === 0 ? (
+                ) : filteredPersons.length === 0 ? (
                   <tr>
                     <td colSpan={4} className="px-6 py-12 text-center text-gray-500">
                       <div className="flex flex-col items-center justify-center">
@@ -168,39 +159,41 @@ export default function Home() {
                     </td>
                   </tr>
                 ) : (
-                  filteredPessoas.map((pessoa, index) => (
+                  filteredPersons.map((person, index) => (
                     <motion.tr
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.05 }}
-                      key={pessoa.id}
+                      key={person.id}
                       className="hover:bg-white/[0.02] transition-colors group"
                     >
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="font-medium text-white">{pessoa.name}</div>
+                        <div className="font-medium text-white">{person.name}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-gray-300">
-                        {pessoa.email}
+                        {person.email}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-gray-300">
-                        {pessoa.birthDate ? format(parseISO(pessoa.birthDate), 'dd/MM/yyyy', { locale: ptBR }) : '-'}
+                        {person.birthDate ? format(parseISO(person.birthDate), 'dd/MM/yyyy', { locale: ptBR }) : '-'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right">
                         <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
-                            onClick={() => openEditModal(pessoa)}
-                            className="p-2 text-[#70a7cb] hover:text-white hover:bg-[#70a7cb]/10 rounded-lg transition-colors"
+                          <Button
+                            variant="icon"
+                            size="icon"
+                            onClick={() => openEditModal(person)}
                             title="Editar"
                           >
                             <Edit2 className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => openDeleteModal(pessoa)}
-                            className="p-2 text-red-400 hover:text-red-300 hover:bg-red-400/10 rounded-lg transition-colors"
+                          </Button>
+                          <Button
+                            variant="icon-destructive"
+                            size="icon"
+                            onClick={() => openDeleteModal(person)}
                             title="Excluir"
                           >
                             <Trash2 className="w-4 h-4" />
-                          </button>
+                          </Button>
                         </div>
                       </td>
                     </motion.tr>
@@ -212,18 +205,18 @@ export default function Home() {
         </div>
       </div>
 
-      <PessoaModal
+      <PersonModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSave}
-        pessoa={selectedPessoa}
+        person={selectedPerson}
       />
 
       <DeleteConfirmModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleDelete}
-        itemName={selectedPessoa?.name}
+        itemName={selectedPerson?.name}
       />
     </div>
   );

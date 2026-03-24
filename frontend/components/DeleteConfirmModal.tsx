@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { AlertTriangle, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { Button } from '@/components/ui/Button';
 
 interface DeleteConfirmModalProps {
   isOpen: boolean;
@@ -58,26 +59,26 @@ export function DeleteConfirmModal({ isOpen, onClose, onConfirm, itemName }: Del
             </p>
 
             <div className="flex justify-center gap-3">
-              <button
+              <Button
                 type="button"
+                variant="ghost"
                 onClick={onClose}
                 disabled={isDeleting}
-                className="px-5 py-2.5 text-sm font-medium text-gray-300 hover:text-white bg-transparent hover:bg-white/5 rounded-xl transition-colors disabled:opacity-50"
               >
                 Cancelar
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
+                variant="destructive"
                 onClick={handleConfirm}
                 disabled={isDeleting}
-                className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isDeleting ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
                   'Excluir'
                 )}
-              </button>
+              </Button>
             </div>
           </motion.div>
         </div>

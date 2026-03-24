@@ -1,11 +1,11 @@
-export interface Pessoa {
+export interface Person {
   id: number;
   name: string;
   email: string;
-  birthDate: string; // ISO string format YYYY-MM-DD
+  birthDate: string;
 }
 
-export type PessoaInput = Omit<Pessoa, 'id'>;
+export type PersonInput = Omit<Person, 'id'>;
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
@@ -20,7 +20,7 @@ export class ApiError extends Error {
 }
 
 async function handleApiError(res: Response): Promise<never> {
-  let message = `Erro inesperado (${res.status})`;
+  let message = `Unexpected error (${res.status})`;
 
   try {
     const body = await res.json();
@@ -35,19 +35,19 @@ async function handleApiError(res: Response): Promise<never> {
 }
 
 export const api = {
-  async getPessoas(): Promise<Pessoa[]> {
+  async getPersons(): Promise<Person[]> {
     const res = await fetch(`${API_URL}/pessoas`);
     if (!res.ok) await handleApiError(res);
     return res.json();
   },
 
-  async getPessoa(id: number): Promise<Pessoa> {
+  async getPerson(id: number): Promise<Person> {
     const res = await fetch(`${API_URL}/pessoa/${id}`);
     if (!res.ok) await handleApiError(res);
     return res.json();
   },
 
-  async createPessoa(data: PessoaInput): Promise<Pessoa> {
+  async createPerson(data: PersonInput): Promise<Person> {
     const res = await fetch(`${API_URL}/pessoa`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -57,7 +57,7 @@ export const api = {
     return res.json();
   },
 
-  async updatePessoa(id: number, data: PessoaInput): Promise<Pessoa> {
+  async updatePerson(id: number, data: PersonInput): Promise<Person> {
     const res = await fetch(`${API_URL}/pessoa/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -67,7 +67,7 @@ export const api = {
     return res.json();
   },
 
-  async deletePessoa(id: number): Promise<void> {
+  async deletePerson(id: number): Promise<void> {
     const res = await fetch(`${API_URL}/pessoa/${id}`, {
       method: 'DELETE',
     });

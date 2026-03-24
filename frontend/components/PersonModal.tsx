@@ -3,15 +3,15 @@
 import { useEffect, useState } from 'react';
 import { X, Save, Loader2 } from 'lucide-react';
 import { parseISO, format } from 'date-fns';
-import { Pessoa, PessoaInput } from '@/lib/api';
+import { Person, PersonInput } from '@/lib/api';
+import { Button } from '@/components/ui/Button';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 
-// Zod schema based on PersonEntity and CreatePersonDTO
-const pessoaSchema = z.object({
+const personSchema = z.object({
   name: z.string()
     .min(3, { message: 'O nome deve ter pelo menos 3 caracteres' })
     .max(100, { message: 'O nome deve ter no máximo 100 caracteres' }),
@@ -22,16 +22,16 @@ const pessoaSchema = z.object({
     .refine((val) => new Date(val) <= new Date(), { message: 'A data de nascimento não pode ser futura' })
 });
 
-type PessoaFormData = z.infer<typeof pessoaSchema>;
+type PersonFormData = z.infer<typeof personSchema>;
 
-interface PessoaModalProps {
+interface PersonModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: PessoaInput, id?: number) => Promise<void>;
-  pessoa?: Pessoa | null;
+  onSave: (data: PersonInput, id?: number) => Promise<void>;
+  person?: Person | null;
 }
 
-export function PessoaModal({ isOpen, onClose, onSave, pessoa }: PessoaModalProps) {
+export function PersonModal({ isOpen, onClose, onSave, person }: PersonModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
@@ -39,8 +39,8 @@ export function PessoaModal({ isOpen, onClose, onSave, pessoa }: PessoaModalProp
     handleSubmit,
     reset,
     formState: { errors }
-  } = useForm<PessoaFormData>({
-    resolver: zodResolver(pessoaSchema),
+  } = useForm<PersonFormData>({
+    resolver: zodResolver(personSchema),
     defaultValues: {
       name: '',
       email: '',
@@ -50,11 +50,11 @@ export function PessoaModal({ isOpen, onClose, onSave, pessoa }: PessoaModalProp
 
   useEffect(() => {
     if (isOpen) {
-      if (pessoa) {
+      if (person) {
         reset({
-          name: pessoa.name,
-          email: pessoa.email,
-          birthDate: format(parseISO(pessoa.birthDate), 'yyyy-MM-dd')
+          name: person.name,
+          email: person.email,
+          birthDate: format(parseISO(person.birthDate), 'yyyy-MM-dd')
         });
       } else {
         reset({
@@ -64,12 +64,12 @@ export function PessoaModal({ isOpen, onClose, onSave, pessoa }: PessoaModalProp
         });
       }
     }
-  }, [pessoa, isOpen, reset]);
+  }, [person, isOpen, reset]);
 
-  const onSubmit = async (data: PessoaFormData) => {
+  const onSubmit = async (data: PersonFormData) => {
     setIsSubmitting(true);
     try {
-      await onSave(data as PessoaInput, pessoa?.id);
+      await onSave(data as PersonInput, person?.id);
       onClose();
     } catch (error: any) {
       console.error(error);
@@ -99,14 +99,16 @@ export function PessoaModal({ isOpen, onClose, onSave, pessoa }: PessoaModalProp
           >
             <div className="flex items-center justify-between p-6 border-b border-[#1f2937]">
               <h2 className="text-xl font-semibold text-white">
-                {pessoa ? 'Editar Pessoa' : 'Nova Pessoa'}
+                {person ? 'Editar Pessoa' : 'Nova Pessoa'}
               </h2>
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={onClose}
-                className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-full transition-colors"
+                className="rounded-full text-gray-400"
               >
                 <X className="w-5 h-5" />
-              </button>
+              </Button>
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
@@ -164,25 +166,17 @@ export function PessoaModal({ isOpen, onClose, onSave, pessoa }: PessoaModalProp
               </div>
 
               <div className="pt-4 flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="px-5 py-2.5 text-sm font-medium text-gray-300 hover:text-white bg-transparent hover:bg-white/5 rounded-xl transition-colors"
-                >
+                <Button type="button" variant="ghost" onClick={onClose}>
                   Cancelar
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-[#192c4c] hover:bg-[#112342] border border-[#70a7cb] rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
+                </Button>
+                <Button type="submit" disabled={isSubmitting}>
                   {isSubmitting ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
                     <Save className="w-4 h-4" />
                   )}
-                  {pessoa ? 'Atualizar' : 'Salvar'}
-                </button>
+                  {person ? 'Atualizar' : 'Salvar'}
+                </Button>
               </div>
             </form>
           </motion.div>
